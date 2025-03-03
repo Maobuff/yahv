@@ -48,6 +48,25 @@ pub fn read(path: &Path, rc: ReaderConfig) -> Result<(), Error> {
             }
         }
 
+        for _ in 0..16 - len {
+            print!("  ");
+        }
+        for _ in 0..(16-len) / 2 {
+            print!(" ");
+        }
+        if (16 - len) % 2 == 1 {
+            print!(" ");
+        }
+
+        print!("| ");
+        for byte in buf[..len].iter() {
+            if byte.is_ascii() && !byte.is_ascii_control() {
+                print!("{}", *byte as char);
+            } else {
+                print!(".")
+            }
+        }
+
         println!();
 
         offset += len;
