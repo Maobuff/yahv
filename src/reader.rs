@@ -38,27 +38,21 @@ pub fn read(path: &Path, rc: ReaderConfig) -> Result<(), Error> {
         }
         print!("{offset_formated}: ");
 
-        for (index, byte) in buf[..len].iter().enumerate() {
-            match rc.upper_case() {
-                true => print!("{:02X}", byte),
-                false => print!("{:02x}", byte),
+        for (index, byte) in buf.iter().enumerate() {
+            if index < len {
+                match rc.upper_case() {
+                    true => print!("{:02X}", byte),
+                    false => print!("{:02x}", byte),
+                }
+            } else {
+                print!("  ");
             }
-            if index % 2 == 1 {
+            if index % rc.group() == rc.group() - 1 {
                 print!(" ");
             }
         }
 
-        for _ in 0..16 - len {
-            print!("  ");
-        }
-        for _ in 0..(16-len) / 2 {
-            print!(" ");
-        }
-        if (16 - len) % 2 == 1 {
-            print!(" ");
-        }
-
-        print!("| ");
+        print!(" | ");
         for byte in buf[..len].iter() {
             if byte.is_ascii() && !byte.is_ascii_control() {
                 print!("{}", *byte as char);
