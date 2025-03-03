@@ -1,6 +1,6 @@
 use std::{
     fs::File,
-    io::{Error, Read},
+    io::{Error, Read, Seek},
     path::Path,
 };
 
@@ -16,8 +16,10 @@ pub fn read(path: &Path, rc: ReaderConfig) -> Result<(), Error> {
         true => format!("{size}").len(),
     };
 
+    file.seek_relative(rc.seek() as i64)?;
+
     let mut buf = vec![0_u8; 16];
-    let mut offset = 0_usize;
+    let mut offset = rc.seek();
 
     loop {
         let len = file.read(buf.as_mut_slice())?;

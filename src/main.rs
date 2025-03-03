@@ -9,13 +9,21 @@ fn usage() {
     println!("Usage:");
     println!("\t yahv [options] file");
     println!("Options:");
-    println!("\t-u\tuse upper case hex letters.");
-    println!("\t-d\tshow offest in decimal.");
+    println!("\t-u\t\tuse upper case hex letters.");
+    println!("\t-d\t\tshow offest in decimal.");
+    println!("\t-g bytes\tnumber of octets per group. Default 4.");
+    println!("\t-h\t\tprint usage.");
+    println!("\t-s seek\tstart at <seek>.");
 }
 
 fn main() {
     let mut args: Vec<String> = args().collect();
     args.remove(0);
+
+    if args.contains(&String::from("-h")) {
+        usage();
+        return;
+    }
 
     let path = match args.last() {
         Some(v) => v.clone(),

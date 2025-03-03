@@ -5,6 +5,7 @@ pub struct ReaderConfig {
     upper_case: bool,
     offset_in_decimal: bool,
     group: usize,
+    seek: usize,
 }
 
 impl Default for ReaderConfig {
@@ -13,6 +14,7 @@ impl Default for ReaderConfig {
             upper_case: false,
             offset_in_decimal: false,
             group: 4,
+            seek: 0,
         }
     }
 }
@@ -29,6 +31,10 @@ impl ReaderConfig {
     pub fn group(&self) -> usize {
         self.group
     }
+
+    pub fn seek(&self) -> usize {
+        self.seek
+    }
 }
 
 impl TryFrom<Vec<String>> for ReaderConfig {
@@ -44,6 +50,28 @@ impl TryFrom<Vec<String>> for ReaderConfig {
 
             if item == "-u" {
                 res.upper_case = true;
+            }
+
+            if item == "-s" {
+                match iter.next() {
+                    Some(value) => {
+                        res.seek = match value.parse::<usize>() {
+                            Ok(v) => v,
+                            Err(_) => {
+                                return Err(Error::new(
+                                    ErrorKind::InvalidData,
+                                    "-s should have number as next argument",
+                                ))
+                            }
+                        };
+                    }
+                    None => {
+                        return Err(Error::new(
+                            ErrorKind::InvalidInput,
+                            "-s should have extra argument",
+                        ))
+                    }
+                }
             }
 
             if item == "-g" {
