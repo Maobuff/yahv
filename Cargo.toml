@@ -1,6 +1,8 @@
 [package]
 name = "yahv"
 version = "0.1.1"
+description = "yet another hex viewer"
+license = "MIT"
 edition = "2021"
 
 [dependencies]
