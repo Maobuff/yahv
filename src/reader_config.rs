@@ -8,6 +8,7 @@ pub struct ReaderConfig {
     seek: usize,
     cols: usize,
     len: usize,
+    bin: bool,
 }
 
 impl Default for ReaderConfig {
@@ -19,6 +20,7 @@ impl Default for ReaderConfig {
             seek: 0,
             cols: 16,
             len: 0,
+            bin: false,
         }
     }
 }
@@ -46,6 +48,10 @@ impl ReaderConfig {
 
     pub fn len(&self) -> usize {
         self.len
+    }
+
+    pub fn bin(&self) -> bool {
+        self.bin
     }
 }
 
@@ -101,6 +107,17 @@ impl TryFrom<Vec<String>> for ReaderConfig {
 
             if item == "-l" {
                 res.len = number("-l", &mut iter)? as usize;
+            }
+
+            if item == "-b" {
+                res.bin = true;
+            }
+        }
+
+        if res.bin {
+            res.group = 1;
+            if res.cols == ReaderConfig::default().cols {
+                res.cols = 6;
             }
         }
 

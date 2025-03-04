@@ -47,12 +47,18 @@ pub fn read(path: &Path, rc: ReaderConfig) -> Result<(), Error> {
 
         for (index, byte) in buf.iter().enumerate() {
             if index < l {
-                match rc.upper_case() {
-                    true => print!("{:02X}", byte),
-                    false => print!("{:02x}", byte),
+                match rc.bin() {
+                    true => print!("{:08b}", byte),
+                    false => match rc.upper_case() {
+                        true => print!("{:02X}", byte),
+                        false => print!("{:02x}", byte),
+                    },
                 }
             } else {
-                print!("  ");
+                match rc.bin() {
+                    false => print!("  "),
+                    true => print!("        "),
+                }
             }
             if index % rc.group() == rc.group() - 1 {
                 print!(" ");
