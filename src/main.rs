@@ -18,12 +18,21 @@ fn usage() {
     println!("\t-l len\t\tstop after <len> octets.");
 }
 
+fn version() {
+    println!("version: {}", env!("CARGO_PKG_VERSION"));
+}
+
 fn main() {
     let mut args: Vec<String> = args().collect();
     args.remove(0);
 
     if args.contains(&String::from("-h")) {
         usage();
+        return;
+    }
+
+    if args.contains(&String::from("-v")) {
+        version();
         return;
     }
 
