@@ -11,9 +11,11 @@ fn usage() {
     println!("Options:");
     println!("\t-u\t\tuse upper case hex letters.");
     println!("\t-d\t\tshow offest in decimal.");
-    println!("\t-g bytes\tnumber of octets per group. Default 4.");
+    println!("\t-g bytes\tnumber of octets per group. Default 2.");
     println!("\t-h\t\tprint usage.");
-    println!("\t-s seek\tstart at <seek>.");
+    println!("\t-s seek\t\tstart at <seek>.");
+    println!("\t-c cols\t\t<cols> octets per line. Default 16.");
+    println!("\t-l len\t\tstop after <len> octets.");
 }
 
 fn main() {

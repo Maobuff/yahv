@@ -1,4 +1,4 @@
-use std::io::{Error, ErrorKind};
+use std::{io::{Error, ErrorKind}, slice::Iter};
 
 #[derive(Debug)]
 pub struct ReaderConfig {
@@ -6,6 +6,8 @@ pub struct ReaderConfig {
     offset_in_decimal: bool,
     group: usize,
     seek: usize,
+    cols: usize,
+    len: usize,
 }
 
 impl Default for ReaderConfig {
@@ -13,8 +15,10 @@ impl Default for ReaderConfig {
         Self {
             upper_case: false,
             offset_in_decimal: false,
-            group: 4,
+            group: 2,
             seek: 0,
+            cols: 16,
+            len: 0,
         }
     }
 }
@@ -35,10 +39,41 @@ impl ReaderConfig {
     pub fn seek(&self) -> usize {
         self.seek
     }
+
+    pub fn cols(&self) -> usize {
+        self.cols
+    }
+
+    pub fn len(&self) -> usize {
+        self.len
+    }
+}
+
+fn number(arg: &str, iter: &mut Iter<String>) -> Result<u64, Error> {
+    match iter.next() {
+        Some(value) => {
+            match value.parse::<u64>() {
+                Ok(v) => Ok(v),
+                Err(_) => {
+                    Err(Error::new(
+                        ErrorKind::InvalidData,
+                        format!("{} should have number as next argument", arg),
+                    ))
+                }
+            }
+        },
+        None => {
+            Err(Error::new(
+                ErrorKind::InvalidInput,
+                format!("{} should have extra argument", arg),
+            ))
+        }
+    }
 }
 
 impl TryFrom<Vec<String>> for ReaderConfig {
     type Error = Error;
+
     fn try_from(value: Vec<String>) -> Result<Self, Self::Error> {
         let mut res = ReaderConfig::default();
 
@@ -52,48 +87,20 @@ impl TryFrom<Vec<String>> for ReaderConfig {
                 res.upper_case = true;
             }
 
+            if item == "-c" {
+                res.cols = number("-c", &mut iter)? as usize;
+            }
+
             if item == "-s" {
-                match iter.next() {
-                    Some(value) => {
-                        res.seek = match value.parse::<usize>() {
-                            Ok(v) => v,
-                            Err(_) => {
-                                return Err(Error::new(
-                                    ErrorKind::InvalidData,
-                                    "-s should have number as next argument",
-                                ))
-                            }
-                        };
-                    }
-                    None => {
-                        return Err(Error::new(
-                            ErrorKind::InvalidInput,
-                            "-s should have extra argument",
-                        ))
-                    }
-                }
+                res.seek = number("-s", &mut iter)? as usize;
             }
 
             if item == "-g" {
-                match iter.next() {
-                    Some(value) => {
-                        res.group = match value.parse::<usize>() {
-                            Ok(v) => v,
-                            Err(_) => {
-                                return Err(Error::new(
-                                    ErrorKind::InvalidData,
-                                    "-g should have number as next argument",
-                                ))
-                            }
-                        };
-                    }
-                    None => {
-                        return Err(Error::new(
-                            ErrorKind::InvalidInput,
-                            "-g should have extra argument",
-                        ))
-                    }
-                }
+                res.group = number("-g", &mut iter)? as usize;
+            }
+
+            if item == "-l" {
+                res.len = number("-l", &mut iter)? as usize;
             }
         }
 

@@ -18,12 +18,17 @@ pub fn read(path: &Path, rc: ReaderConfig) -> Result<(), Error> {
 
     file.seek_relative(rc.seek() as i64)?;
 
-    let mut buf = vec![0_u8; 16];
+    let mut buf = vec![0_u8; rc.cols()];
     let mut offset = rc.seek();
+    let mut len = 0;
 
     loop {
-        let len = file.read(buf.as_mut_slice())?;
-        if len == 0 {
+        if len >= rc.len() && rc.len() != 0 {
+            break;
+        }
+
+        let l = file.read(buf.as_mut_slice())?;
+        if l == 0 {
             break;
         }
 
@@ -41,7 +46,7 @@ pub fn read(path: &Path, rc: ReaderConfig) -> Result<(), Error> {
         print!("{offset_formated}: ");
 
         for (index, byte) in buf.iter().enumerate() {
-            if index < len {
+            if index < l {
                 match rc.upper_case() {
                     true => print!("{:02X}", byte),
                     false => print!("{:02x}", byte),
@@ -55,7 +60,7 @@ pub fn read(path: &Path, rc: ReaderConfig) -> Result<(), Error> {
         }
 
         print!(" | ");
-        for byte in buf[..len].iter() {
+        for byte in buf[..l].iter() {
             if byte.is_ascii() && !byte.is_ascii_control() {
                 print!("{}", *byte as char);
             } else {
@@ -65,7 +70,8 @@ pub fn read(path: &Path, rc: ReaderConfig) -> Result<(), Error> {
 
         println!();
 
-        offset += len;
+        offset += l;
+        len += l;
     }
 
     Ok(())

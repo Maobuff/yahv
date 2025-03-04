@@ -9,7 +9,12 @@ Currently, the project is in the WIP state.
 Usage:
          yahv [options] file
 Options:
-        -u      use upper case hex letters.
-        -d      show offest in decimal.
+        -u              use upper case hex letters.
+        -d              show offest in decimal.
+        -g bytes        number of octets per group. Default 2.
+        -h              print usage.
+        -s seek         start at <seek>.
+        -c cols         <cols> octets per line. Default 16.
+        -l len          stop after <len> octets.
 ```
 
