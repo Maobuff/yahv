@@ -1,6 +1,6 @@
 [package]
 name = "yahv"
-version = "0.2.0"
+version = "0.2.1"
 description = "yet another hex viewer"
 license = "MIT"
 homepage = "https://github.com/Maobuff/yahv"

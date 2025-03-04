@@ -16,5 +16,6 @@ Options:
         -s seek         start at <seek>.
         -c cols         <cols> octets per line. Default 16.
         -l len          stop after <len> octets.
+        -b              print octets in binary.
 ```
 

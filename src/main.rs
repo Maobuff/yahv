@@ -16,6 +16,7 @@ fn usage() {
     println!("\t-s seek\t\tstart at <seek>.");
     println!("\t-c cols\t\t<cols> octets per line. Default 16.");
     println!("\t-l len\t\tstop after <len> octets.");
+    println!("\t-b\t\tprint octets in binary.");
 }
 
 fn version() {
